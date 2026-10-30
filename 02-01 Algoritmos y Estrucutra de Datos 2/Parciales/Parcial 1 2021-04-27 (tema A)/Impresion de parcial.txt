@@ -1,0 +1,273 @@
+//Ejercicio 1
+#include <stdbool.h>
+
+#include "pivot.h"
+
+bool is_pivot(int array[], unsigned int length, unsigned int piv) {
+    int i;
+    bool resultado = true;
+
+    for (i = 0; i<piv;i++)
+    {
+      if(array[i] > array[piv])
+      {
+         resultado = false;
+      }
+    }
+    for(i=piv+1; i <length; i++)
+    {
+        if(array[piv] > array[i])
+        {
+            resultado = false;
+        }
+    }
+
+    return resultado;
+}
+//Ejercicio 2
+#include <stdbool.h>
+
+#include "odd.h"
+
+bool is_odd_sorted(int array[], unsigned int length) {
+    int i = 0;
+    bool resultado = true;
+    for(i = 1;i+2<length;i+2)
+    {
+        if(array[i]> array[i+2])
+        {
+           resultado = false;
+        }
+    }
+    return resultado;
+}
+//Ejercicio 3
+//Helpers
+/*
+  @file helpers.c
+  @brief sogn helpers methods implementation
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#include "song.h"
+#include "helpers.h"
+
+static const char SEPARATOR = ' ';
+
+/**
+ * @brief reads characters from file until feof or separator is reached. read characters are stored in 'result'
+ *
+ * @param[in]  file             An opened stream file
+ * @param[in]  separator        string separator
+ * @param[out] result           the read characters wil be stored here
+ * @param[in]  result_max_size  The maximum of characters that result allow.
+ *
+ * @return Amount of read characters
+ */
+static unsigned int process_string(FILE *file, char separator, char result[], unsigned int result_max_size)
+{
+    unsigned int str_size = 0u;
+    char c = (char)((int)separator + 1);
+    while (!feof(file) && c != separator) {
+        c = fgetc(file);
+        if (c != separator && str_size < result_max_size - 1u)
+        {
+            result[str_size] = c;
+            ++str_size;
+        }
+        else if (c != separator && str_size >= result_max_size - 1u)
+        {
+            fprintf(stderr, "Max string length reached: %u \n", result_max_size);
+            exit(EXIT_FAILURE);
+        }
+    }
+    result[str_size] = '\0';
+
+    return str_size;
+}
+
+
+void playlist_dump(song_t playlist[], unsigned int length) {
+    for (unsigned int i = 0u; i < length; i++) {
+        fprintf(stdout,"[%u] \"%s\" por %s  (%u:%02u)\n", playlist[i].year,
+                                                    playlist[i].song_name,
+                                                    playlist[i].artist_name,
+                                                    playlist[i].seconds / 60,
+                                                    playlist[i].seconds % 60);
+    }
+}
+
+/**
+ * @brief process an opened file stream pointer and stores parsed values into song array
+ *
+ * @param[in]      file       The opened file
+ * @param[out]     playlist   Songs array
+ *
+ * @return Amount of read songs
+ */
+static unsigned int process_FILE(FILE *file, song_t playlist[], unsigned int max_size) {
+    unsigned int i = 0u;
+    while (!feof(file)) {
+        unsigned int readed=0;
+        process_string(file, SEPARATOR, playlist[i].song_name, MAX_NAME_LENGTH + 1u);
+        process_string(file, SEPARATOR, playlist[i].artist_name, MAX_ARTIST_LENGTH + 1u);
+        readed = fscanf(file, " %u  %u  ", &playlist[i].year, &playlist[i].seconds);
+        ++i;
+    }
+    return (i);
+}
+
+unsigned int process_file(const char *filepath, song_t playlist[], unsigned int max_size) {
+    unsigned int size = 0;
+    FILE *file = NULL;
+    file = fopen(filepath, "r");
+    if (file == NULL) {
+        fprintf(stderr, "File does not exist.\n");
+        exit(EXIT_FAILURE);
+    }
+    size = process_FILE(file, playlist, max_size);
+    fclose(file);
+    return (size);
+}
+//Main
+/*
+  @file main.c
+  @brief Main program function implementation
+*/
+/* First, the standard lib includes, alphabetically ordered */
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+
+/* Then, this project's includes, alphabetically ordered */
+#include "helpers.h"
+#include "song.h"
+#include "sort.h"
+
+#define MAX_SONGS 100u
+
+/**
+ * @brief print usage help
+ * @param[in] program_name Executable name
+ */
+void print_help(char *program_name) {
+    /* Print the usage help of this program. */
+    printf("Usage: %s <input file path>\n\n",
+           program_name);
+}
+
+/**
+ * @brief reads file path from command line
+ *
+ * @param[in] argc amount of command line arguments
+ * @param[in] argv command line arguments
+ *
+ * @return An string containing read filepath
+ */
+char *parse_filepath(int argc, char *argv[]) {
+    /* Parse the filepath given by command line argument. */
+    char *result = NULL;
+
+    if (argc < 2) {
+        print_help(argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    result = argv[1];
+
+    return (result);
+}
+
+/**
+ * @brief Main program function
+ *
+ * @param[in] argc amount of command line arguments
+ * @param[in] argv command line arguments
+ *
+ * @return EXIT_SUCCESS when programs executes correctly, EXIT_FAILURE otherwise
+ */
+int main(int argc, char *argv[]) {
+    char *filepath = NULL;
+
+    /* parse the filepath given in command line arguments */
+    filepath = parse_filepath(argc, argv);
+
+    /* create an array of MAX_SIZE elements */
+    song_t playlist[MAX_SONGS];
+
+
+    /* parse the file to load de players */
+    unsigned int length = process_file(filepath, playlist, MAX_SONGS);
+
+    /* show the playlist in the screen */
+    playlist_dump(playlist, length);
+
+    /* check if it is sorted and show message */
+    //Me habia tirado un error que no podia comparar entre putnero e integrer, basicamente me habia olcidado de los parentesis y sus contenidos
+    if(array_is_sorted(playlist, length) == true)
+    {
+        printf("Ey si esta ordenado que cool. \n");
+    }
+
+    /* check if it is odd-sorted and show message */
+    if(array_is_odd_sorted(playlist, length) == true)
+    {
+        printf("Ey es aun mas cool (sarcasmo) esta ordenado de fomra impar. \n");
+    }
+
+    return (EXIT_SUCCESS);
+}
+
+// comandos para ejecutar (windows):
+  //gcc -Wall -Werror -Wextra -pedantic -std=c99 helpers.c main.c sort.c -o sorter
+  //./sorter sorted_queen.lst
+  //se crea el archivo sorter, accedo con el './' y le paso un archivo que este caso es sorted_queen.lst
+//sort
+/*
+  @file sort.c
+  @brief sort functions implementation
+*/
+#include <stdbool.h>
+#include "helpers.h"
+#include "sort.h"
+#include "song.h"
+
+
+bool goes_before(song_t s1, song_t s2) {
+
+    bool resultado = true;
+
+    if(s1.seconds > s2.seconds)
+    {
+        return false;
+    }
+
+    return resultado;
+    //return s1.seconds <= s2.seconds; Esto es la forma mas facil pero como ya estaba escrita decidi hacer otro camino
+}
+
+bool array_is_sorted(song_t playlist[], unsigned int length) {
+    unsigned int i = 0u;
+    bool sorted = true;
+    while (i + 1 < length && sorted) {
+        sorted = goes_before(playlist[i], playlist[i + 1]);
+        i = i + 1;
+    }
+    return sorted;
+}
+
+bool array_is_odd_sorted(song_t playlist[], unsigned int length) {
+    bool res = true;
+    for(unsigned int i = 1; i+2 <length;i+=2)
+    {
+        if( goes_before(playlist[i], playlist[i+2]) == false)
+        {
+            res = false;
+        }
+    }
+    return res;
+}

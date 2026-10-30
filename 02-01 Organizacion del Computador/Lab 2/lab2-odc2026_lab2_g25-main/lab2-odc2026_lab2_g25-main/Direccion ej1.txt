@@ -1,0 +1,1 @@
+cd "/mnt/c/Users/molin.DESKTOP-Q79PFAB/Desktop/Facu/02-01 Organizacion del Computador/Lab 2/lab2-odc2026_lab2_g25-main/lab2-odc2026_lab2_g25-main/ejercicio1"

@@ -1,0 +1,24 @@
+#include <stdio.h>
+//int main() {
+ //   printf("Hola Juli 3 motivos de porque sos tan gay!\n");
+   // printf("motivo 1: Sos negro? \n");
+ //   printf("motivo 2: te gusta el poto de moly \n");
+   // printf("motivo 3:te comiste tremendo trava \n");
+
+   // return 0;
+//}
+
+// Laboratorio 1
+
+int main(void) {
+    int x, y, z;
+    
+    printf("Ingrese un valor para x, y, z: \n");
+    
+    scanf("%d %d %d", &x, &y, &z);
+
+    printf("x + y + z = %d \n", x + y + z );
+    return 0;
+}
+
+

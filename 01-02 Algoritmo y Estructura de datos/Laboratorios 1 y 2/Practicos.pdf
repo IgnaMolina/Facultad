@@ -1,0 +1,277 @@
+Practico 1
+esCero :: Int -> Bool
+esCero n | n==0 = True
+         | n/=0 = False
+
+esPositivo :: Int -> Bool 
+esPositivo n | n>0 = True
+             | n<=0 = False
+
+esVocal :: Char -> Bool
+esVocal 'a' = True
+esVocal 'e' = True
+esVocal 'i' = True
+esVocal 'o' = True
+esVocal 'u' = True
+esVocal c = False
+
+valorAbsoluto :: Int -> Int
+valorAbsoluto n | n>=0 = n
+                | n<0 = n*(-1)
+
+productoria :: [Int] -> Int
+productoria [] = 1
+productoria (x:xs) = x * productoria xs 
+
+paraTodo :: [Bool] -> Bool
+paraTodo [] = True
+paraTodo (x:xs) | x==True = paraTodo xs
+                | x==False = False
+
+sumatoria :: [Int] -> Int
+sumatoria [] = 0
+sumatoria (x:xs) = x + sumatoria xs
+
+
+
+esmul :: Int -> Int -> Bool
+esmul x y = mod y x == 0
+
+hayMultiplo :: Int -> [Int] -> Bool
+hayMultiplo x ys = existe ys (esmul x)
+
+{- Programar la funci ́on existeDivisor::Int-> [Int] -> Bool, que dado en entero n y una lista ls ,
+devuelve True si y solo si, existe alg ́un elemento en ls que divida a na. -}
+
+
+divide :: Int -> Int -> Bool
+divide x y = mod x y == 0
+
+existeDivisor :: Int-> [Int] -> Bool
+existeDivisor n ls = existe ls (divide n)
+
+{-Utilizando la funcion del apartado anterior, definı la funcion esPrimo:: Int -> Bool, que dado un entero
+n, devuelve True si y solo si n es primo. Ayuda: En Haskell se puede escribir la lista que contiene el rango de
+n ́umeros entre n y m como [n..m].
+-}
+
+esPrimo:: Int -> Bool
+esPrimo n = existeDivisor n [2..n-1] == False
+
+esprimo:: Int -> Int
+esprimo n | existeDivisor n [2..n-1]  = 1
+          | otherwise = n
+
+{-factorial :: Int -> Int, que toma un n ́umero n y calcula n!.-}
+
+factor :: Int -> Int
+factor x = productoria [1..x] id
+
+{-Programar la funci ́on multiplicaPrimos :: [Int] -> Int que calcula el producto de todos los n ́umeros
+primos de una lista.-}
+
+multiplicaPrimos :: [Int] -> Int
+multiplicaPrimos (x:xs) = productoria (x:xs) esprimo
+
+{-Programar la funci ́on esFib :: Int -> Bool, que dado un entero n, devuelve True si y s ́olo si n est ́a en la
+sucesi ́on de Fibonacci. Ayuda: Realizar una funci ́on auxiliar fib :: Int -> Int que dado un n devuelva el
+n- ́esimo elemento de la sucesi ́on.-}
+
+fib :: Int -> Int
+fib 0 = 0
+fib 1 = 1
+fib x = fib (x - 1) + fib (x - 2)
+
+esFib :: Int -> Bool
+esFib n = existe [0..n+1] (\x -> fib x == n)
+
+{-Utilizando la funci ́on del apartado anterior, defin ́ı la funci ́on todosFib :: [Int] -> Bool que dada una
+lista xs de enteros, devuelva si todos los elementos de la lista pertenecen (o no) a la sucesi ́on de Fibonacci.-}
+
+todosFib :: [Int] -> Bool
+todosFib xs = paratodo xs esFib
+
+Practico 2
+
+esCero :: Int -> Bool
+esCero 0 = True
+esCero _ = False
+
+esCero2 :: Int -> Bool
+esCero2 n | n==0 = True
+          | n/=0 = False
+
+esCero3 :: Int -> Bool
+esCero3 0 = True
+esCero3 n = False
+
+esPositivo :: Int -> Bool
+esPositivo x = x > 0
+
+esVocal :: Char -> Bool
+esVocal 'a' = True
+esVocal 'e' = True
+esVocal 'i' = True
+esVocal 'o' = True
+esVocal 'u' = True
+esVocal n = False
+
+valorAbsoluto :: Int -> Int
+valorAbsoluto n | n>=0 = n               
+                | n<0 = -n
+                 
+productoria :: [Int] -> Int
+productoria [] = 1
+productoria (n:ns) = n * productoria ns
+
+ 
+ 
+todoIguales :: [Int] -> Bool
+todoIguales [] = True
+todoIguales (x:[]) = True
+todoIguales (x:(y:ys)) = x==y && todoIguales (y:ys)
+
+--4)
+maximo :: [Int] -> Int
+maximo [] = error "La lista está vacía."
+maximo xs = maximum xs
+
+minimo :: [Int] -> Int
+minimo [] = error "La lista está vacía."
+minimo xs = minimum xs
+
+compara :: [Int] -> [Int] -> Bool
+compara (x:xs) (y:ys)  | maximo xs >= minimo ys = False
+                       | maximo xs < minimo ys = True
+                       
+-- xs = [−3, 9, 8], ys = [6, 7, 8]. =False
+
+--5)
+
+todos :: [Bool] -> Bool
+todos [] = True
+todos(x:xs) = x == todos xs && x == True
+
+
+porDos :: [Int] -> [Int]
+porDos [] = []
+porDos (x:xs) = x*2 : porDos xs
+
+map1 :: (a -> b) -> [a] -> [b]
+map1 f [] = []
+map1 f (x:xs) = f x : map1 f xs
+
+
+
+sonmenoresa3 :: [Int] -> [Bool]
+sonmenoresa3 [] = []
+sonmenoresa3 (x:xs) = (x<3) : sonmenoresa3 xs
+
+filter1 :: (a -> Bool) -> [a] -> [a]
+filter1 f [] = []
+filter1 f (x:xs) | f x = x : filter1 f xs
+                 | otherwise = filter1 f xs
+
+--6) a) n es el elemento mas grande de la lista xs
+
+
+
+--masGrande :: Int -> [Int] -> Bool
+--masGrande n [] = False
+--masGrande n (x:xs) = n > x 
+--where pertenece :: Int -> [Int] -> Bool
+      --pertenece n [] = False
+      --pertenece n (x:xs) | n == x = True
+                   --        | otherwise : pertenece xs
+                           
+  
+--7) a) paratodo’ :: [a] -> (a -> Bool) -> Bool
+paratodo' :: [a] -> (a -> Bool) -> Bool
+paratodo' [] f = True
+paratodo' (x:xs) f = f x && paratodo' xs f 
+
+-- existe :: [a] -> (a -> 
+
+-- hayMultiplo :: Int -> [Int] -> Bool
+
+existe' :: [a] -> (a -> Bool) -> Bool
+existe' [] f = False
+existe' (x:xs) f = f x || existe' xs f
+
+--9b
+
+hayMultiplo :: Int -> [Int] -> Bool
+hayMultiplo n (x:xs) = existe' xs esMultiplo
+  where esMultiplo x = x `mod` n == 0
+  
+  -- SEGUNDO PRACTICO --
+  
+  --1)
+  
+  --2)
+data Dia = Lunes | Martes | Miercoles |Jueves | Viernes | Sabado | Domingo deriving (Eq, Show)
+  
+queHagodia :: Dia -> String
+queHagodia Domingo = "Descanso"
+queHagodia Sabado = "Descanso"
+queHagodia _ = "Trabajo"
+  
+  --5c 
+ 
+type Altura = Int
+type NumCamiseta = Int
+
+data Zona = Arco | Defensa | Mediocampo | Delantera
+data TipoReves = DosManos | UnaMano
+data Modalidad = Carretera | Pista | Monte | BMX
+data PiernaHabil = Izquierda | Derecha
+
+type ManoHabil = PiernaHabil
+
+data Deportista = Ajedrecista
+                |Ciclista Modalidad
+                |Velocista Altura
+                |Tenista TipoReves ManoHabil Altura 
+                |Futbolista Zona NumCamiseta PiernaHabil Altura 
+
+  --c
+contar_velocistas :: [Deportista] -> Int
+contar_velocistas [] = 0
+contar_velocistas ((Velocista a):xs) = 1 + contar_velocistas xs
+contar_velocistas (_:xs) = contar_velocistas xs
+
+Pracitco 2 parte 2
+
+data Altura = Int
+data Modalidad = Carretera | Pista
+
+
+data Deportista = Velocista Altura
+                | Ciclista Modalidad
+
+juan :: Deportista
+juan = Velocista 172
+
+
+esVelocistaAlto :: Deportista -> Int -> Bool
+esVelocistaAlto (Velocista altura) n = altura > n 
+esVelocistaAlto _ _ = False
+                           
+contarVelocista ::  [Deportista] -> Int
+contarVelocista [] = 0
+contarVelocista ((Velocista a ):xs) = 1 + contarVelocista xs
+contarVelocista (_:xs) = contarVelocista xs
+
+-- Ejercicio 2
+--Ejercicio 2 Supongamos que queremos representar una cola de deportistas, como aquellas que forman fila para retirar sus credenciales en la villa olı́mpica. Un deportista llega y se coloca al final de la cola y espera su turno. El orden de atención respeta el orden de llegada, es decir, quien llega primero es atendido primero. Podemos representar esta situación con el siguiente tipo de datos:
+
+data Cola = VaciaC | Encolada Deportista Cola deriving Show 
+
+encolar :: Deportista -> Cola -> Cola
+encolar deportista VaciaC = Encolada deportista VaciaC
+encolar deportista (Encolada d cola) = Encolada d (encolar deportista cola)
+
+
+
+
+

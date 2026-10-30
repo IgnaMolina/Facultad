@@ -1,0 +1,68 @@
+-- Definición del tipo Lanzamiento con dos constructores: Album y Sencillo
+data Lanzamiento = Album String String [String] Int
+                 | Sencillo String String Int Int
+                 deriving Show
+
+-- ejercicio b
+
+-- Definición del término thriller
+thriller :: Lanzamiento
+thriller = Album "Thriller" "Michael Jackson" 
+  [ "Wanna be starting something"
+  , "Baby me mine"
+  , "The girl is mine"
+  , "Thriller"
+  , "Beat it"
+  , "Billie Jean"
+  , "Human nature"
+  , "Pretty young thing"
+  , "The lady in my life"
+  ] 1982
+
+-- Definición del término yesterday
+yesterday :: Lanzamiento
+yesterday = Sencillo "Yesterday" "The Beatles" 125 1965
+
+-- Ejercicio c
+
+-- Definir la función esDiscoLargo
+esDiscoLargo :: Lanzamiento -> Bool
+esDiscoLargo (Album _ _ temas _) = length temas >= 5
+esDiscoLargo (Sencillo _ _ _ _)  = False
+
+-- Ejercicio d
+-- Definir la función esSencilloActual
+esSencilloActual :: Lanzamiento -> Bool
+esSencilloActual (Sencillo _ _ _ anio) = anio >= 2020
+esSencilloActual (Album _ _ _ _)       = False
+
+-- Ejercicio e
+
+-- Definir la función tracksAlbumMasLargo
+tracksAlbumMasLargo :: [Lanzamiento] -> Int
+tracksAlbumMasLargo lanzamientos = 
+    if null albums
+    then 0  -- Si no hay álbumes, devolvemos 0
+    else maximum (map cantidadDeTracks albums)
+  where
+    -- Filtramos solo los álbumes de la lista
+    albums = [album | album@(Album _ _ _ _) <- lanzamientos]
+
+    -- Función auxiliar que devuelve la cantidad de tracks de un álbum
+    cantidadDeTracks :: Lanzamiento -> Int
+    cantidadDeTracks (Album _ _ temas _) = length temas
+    cantidadDeTracks _ = 0  -- No debería ocurrir, pero lo agregamos por seguridad
+
+-- Ejercicio 2
+
+-- Definición del tipo ColaLanzamiento
+data ColaLanzamiento = Vacia | Encolada Lanzamiento ColaLanzamiento
+  deriving Show
+
+-- Definir la función albumsDelArtista
+albumsDelArtista :: ColaLanzamiento -> String -> ColaLanzamiento
+albumsDelArtista Vacia _ = Vacia
+albumsDelArtista (Encolada lanzamiento cola) artista =
+    case lanzamiento of
+        Album _ a _ _ | a == artista -> Encolada lanzamiento (albumsDelArtista cola artista)
+        _ -> albumsDelArtista cola artista

@@ -1,0 +1,28 @@
+//Buscamos la x
+loop: ldurb w10, [x9]
+      lsr x9, x9, #8
+      cmp x10, 0x58
+      b.ne loop
+      //x9 tiene la dirección de memoria, x10 se uso para ver si x9 tiene la x
+
+
+loop2: 
+      lsr x11, x9, #1 //Nos movemos a la derecha de x
+      ldurb w12, [x11] // almacenamos en x12 lo que tiene x11 
+      cmp x12, 0x20 //comparamos si x12 es un espacio vacio
+      b.eq if
+      lsl x11, x9,#1
+      ldurb w12, [x11]
+      b.eq if
+      lsl x11, x9, #7 //nos movemos 16 lugares a la derecha (arriba de la x)
+      ldurb w12, [x11] //Guarda en x12 lo que esta arriba de la x
+      cmp x12, 0x20 // comparamos si x12 es espacio vacio
+      b.eq if
+      lsr x11, x9, #7 //Nos movemos 16 lugares abajo (abajo de la x)
+      ldurb w12 [x11] //Guarda en x12 lo que esta abjo de x
+      cmp x12, 0x20  //  comparamos si x12 es espacio vacio
+      b.eq if
+      //b final //Si no tenemos un espacio vacio al lado anda a final (lo hacemos después)
+
+     if: mov x11, 0x58// en x11 pongo x
+         mov x9, 0x20// en x9 pongo espacio vacio

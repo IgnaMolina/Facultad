@@ -1,0 +1,36 @@
+Idea FUndamental:
+ entrada -> procesamiento -> salida
+	Podemos comunicarnos con otros archivos o otros programas, para eso podemos usar palabaras como open() en los lenguajes, detras de camara se usan lo stdin -> 0/ stdout -> 1/ stderr -> 2, cuando nos comunicamos con sockets el flujo en estos casos es file -> pipe -> network conection.
+	Pipes, como traduciriamso tuberia o cañeria, se usan para comunicar el outpu de un proceso al input de otro "$ ls | wc -l", una pipe es un par de 2 descriptores de archivos, tendriamos stdin -> ls -> in pie -> out pipe -> wc -> stdout.
+	Linux crea un buffer para cada pipe, cuando el buffer se llena, osea escribimos mas de lo que leemos, le responde  a in con un will block (wait).
+	Cuando matamos una tuberia, osea suamos kill, se hace kill a la opuesta, es decir el canal se cierrra.
+	Si queres ponerle nombre a un pipe "$ mkfifo my_pipe" y ahora con "f = open(./my_pipe); f.write("Hi") se envia por la pipe al que tenga "f = open(./my_pipe); f.readline()"
+
+Funcion **cat**:
+	Su funcion basica es concatenar acrhivos y escribirlos en stdout: "$ cat archivo.txt" deberia mostrar HOLA /n ESTO ES UNA PRUEBA /n 123/0
+	Tambien puede recibir multiples archivos como "$cat a.txt b.txt > combinado.txt"
+	**cat no abre archivos en sentido de un edito** solo lee bytes de sus entradas y los copia a sus salidas.
+Funcion **grep**:
+	Su funcion es buscar patrones dentro de texto, "$ grep "hola" archivo.txt" devuelve la linea en la que esta hola, si agregas "$ grep -i ...", -i hace que ignore mayusculas/minusculas
+	IMPORTNTE: grep bsuca texto, si queres bsucar "1" va a buscar el caracter 1, no busca el numero entero 1, osea si tenes 1 /n 10/n 21 ... te va devolver todos, no solo el que es valido como "1".
+	Si pones grep -v, esto indica, busca lo contrario a lo que te doyS
+Funcion **sort**
+	Ordena lineas de texto, se basa en un ordenamiento lexicografico, es decir, basado en la representacion textual, osea puede ordenar abcd pero no 1234, no ordena numero por si solo, si queres hacer eso se agrega:
+		"$ sort -n numeros.txt".
+Funcion **head**:
+	Muestra la primer linea de una entrada, podes especificar cuantas con "$ head -n 5 archivo.txt" el -n 5 es lo que importa para eso, por defecto, head solo, muestra las primeras 10 lineas.
+Funcion **wc**:
+	Significa word count, sirve para contar distintas cosas de un archivo, si usas "$ wc archivo.txt" te va a devolver algo como " lineas palabras bytes archivo" osea algo como "10 35 250 archivo.txt"
+	Para especificar que queres contar usas:
+		"$ wc -l": Cantidad de lineas.
+		"$ wc -w": Cantidad de palabras.
+		"$ wc -c": Cantidad de bytes.
+	Podes combinar wc con grep para, por ejemplo, contar lienas especificas.
+Funcion **cut**:
+	Sirve para extraer partes de cada linea definiendo un delimitador, por ejemplo, "$ cut -d ':' -f 1 personas.txt" si tiene juan:20:Arg dejaria solo el juan. -d define : como delimitador, -f 1, deja el campo 1, si fuera 2, devolveria 20
+Funcion **tr**:
+	Significa translate, basicamente reemplaza o elimina caracteres, se usa como "$ echo "hola Mundo" | tr ' ' '_'" prdocue hola_mundo, eliminando el espacio y remplazandolo por '_'.
+	Algo util es hacer "$ echo "hola" | tr 'a-z 'A-Z'" esto produce HOLA, si despues del tr pones -d, lo que pongas luego en '' se elimina.
+Funcion **awk**:
+	Es como un buscar texto, pero mas potente creo, su sintaxis es "$ awk -F ':' '{print $1, $3]' personas.txt" el -F ':' es el separador de cmapos, en print, $1 y $3 son los bloques que queres, si tenes juan:20:arg, buscas juan arg.
+	Es muy potente, podes poner {print $1, "es de", $3} y tomando juan:20:arg imrpime juan es de arg.
